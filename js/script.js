@@ -16,12 +16,14 @@ const remainingGuessesSpan = document.querySelector(".remaining span");
 const message = document.querySelector(".message");
 // The hidden button that will appear prompting the player to play again.
 const playAgainButton = document.querySelector(".play-again");
-
  
-const word = "magnolia";// starting word to test out the game
+const word = "magnolia"; //starting word to test out the game
+const guessedLetters = []; //This array will contain all the letters the player guesses. 
+
 
 
 // Function to add Placeholder symbol for Each Letter -----------------------
+
 const placeholder = function (word) { 
     const placeholderLetters = []; 
     for (const letter of word){
@@ -33,10 +35,52 @@ const placeholder = function (word) {
 
 placeholder(word); 
 
-// Event Listener for the Button ------------------------------------------------
-guessLetterButton.addEventListener ("click", function(e){
+//Event Listener for the Button ------------------------------------------------
+
+guessLetterButton.addEventListener ("click", function (e) {
     e.preventDefault(); //prevent reloading behavior
+    message.innerText = ""; // empty the text of the message element 
+
     const guess = letterInput.value; //capture the value of the input
-    console.log(guess); //log out the value of the input
+    // console.log(guess); //log out the value of the input
+    
+    const goodGuess = validateInput(guess); //call the function you made that checks the input, and pass it the input value as an argument. Save the result of this function call to a variable 
+    console.log(guess);//log it out to the console.
+
+    if (goodGuess){
+        makeGuess(guess);
+    }
+    
     letterInput.value = ""; //empty the value of the input
+
 });
+
+// Function to Check Player's Input ------------------------------------------------
+
+const validateInput = function (input){
+    const acceptedLetter = /[a-zA-Z]/ // Variable for the accepted letter sequece, a Regular expression. 
+    if (input.length === 0) { //check if the input is empty
+        message.innerText = "The input is empty. Type only one letter."; //Each condition should have a message directing the player on what to input. 
+    } else if (input.length > 1 ) { //check if the player has entered more than one letter.
+        message.innerText = "More than one letter input. Type only one letter.";
+    } else if (!input.match(acceptedLetter)) { //checkif they’ve entered a character that doesn’t match the regular expression pattern
+        message.innerText = "Input not a letter. Type only one letter from A to Z.";
+    } else {
+        return input;
+    }
+};
+
+// Function to Capture Input ------------------------------------------------
+
+const makeGuess = function(guess){ 
+    guess = guess.toUpperCase(); //convert all letters to one casing
+    if (guessedLetters.includes(guess)) { //check to see if your guessedLetters array already contains that letter
+        message.innerText = "Input was already guessed. Try again."; //If the player already guessed the same letter, update the message to in
+    } else {    
+        guessedLetters.push(guess);//If they haven’t guessed that letter before, add the letter to the guessedLetters array.
+        console.log(guessedLetters);
+    }
+};
+
+
+
